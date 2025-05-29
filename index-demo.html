@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Événements - GolfPlus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html {
+        font-size: 16px;
+      }
+      *,
+      ::before,
+      ::after {
+        box-sizing: border-box;
+        border-width: 0;
+        border-style: solid;
+        border-color: #e5e7eb;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        /* padding: 20px; */
+        background: #e4ecf5;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      header {
+        background: #fff;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      main {
+        max-width: 80em;
+        margin: 0 auto;
+      }
+      /* @media (min-width: 1024px) {
+        main {
+          padding-left: 2rem;
+          padding-right: 2rem;
+          padding-top: 2rem;
+          padding-bottom: 2rem;
+        }
+      } */
+      /* @media (min-width: 640px) { */
+        main {
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+          padding-top: 1rem;
+          padding-bottom: 1rem;
+        }
+      /* } */
+      .rounded-shadow-container {
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color),
+          0 2px 4px -2px var(--tw-shadow-color);
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        background-color: #fff;
+      }
+      .filters {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      @media screen and (max-width: 768px) {
+        .filters {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+      }
+      .filters select,
+      .filters input {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #333333;
+      }
+      .filter-label {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+      .flex-col {
+        display: flex;
+        flex-direction: column;
+      }
+      #events-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .card-header {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+      }
+      .title-demo {
+        font-weight: 400;
+      }
+
+      .title-brand {
+        font-weight: 700;
+      }
+      .card-title {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #252525;
+      }
+      .card-date {
+        font-size: 0.9rem;
+        color: #0f6403;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        background-color: #76e66828;
+        margin-bottom: 12px;
+      }
+      .card-location {
+        display: flex;
+        align-items: center;
+        color: #4b5563;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .card-location svg {
+        width: 20px;
+        height: 20px;
+        /* margin-right: 0.5rem; */
+        color: #6b7280;
+      }
+      .brands-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+      }
+      .brand-logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .brand {
+        position: relative;
+      }
+      .avatar {
+        width: 60px;
+        /* height: 55px; */
+        /* border-radius: 50%; */
+        background-color: #fff;
+        /* padding: 0.2rem; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .avatar img {
+        width: 100%;
+        /* height: 100%; */
+        object-fit: contain;
+        /* border-radius: 50%; */
+        /* border: 1px solid #ccc; */
+        background: #fff;
+        padding: 2px;
+      }
+      .brand .tooltip {
+        position: absolute;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-4px);
+        background: #1f2937;
+        color: white;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        opacity: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        transition: opacity 0.2s ease-in-out;
+        z-index: 100;
+      }
+      .brand:hover .tooltip {
+        opacity: 1;
+      }
+      #no-events-message {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+        display: none;
+      }
+      .brand-logos.single-brand .avatar img {
+        height: auto;
+      }
+      .brand-logos.single-brand .avatar {
+        width: 200px;
+      }
+
+.card {
+  transition: all .25s ease-in-out;
+}
+.card:hover {
+  border-left:6px solid #014820;
+  /* border-left:6px solid rgb(201, 243, 11); */
+
+
+}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Événements de l'été</h1>
+    </header>
+
+    <main>
+      <div class="rounded-shadow-container">
+        <div class="filters">
+          <div class="flex-col">
+            <label for="region-filter" class="filter-label">Région</label>
+            <select id="region-filter">
+              <option value="">Toutes les régions</option>
+            </select>
+          </div>
+          <div class="flex-col">
+            <label for="date-filter" class="filter-label">Date</label>
+            <input type="date" id="date-filter" />
+          </div>
+          <div class="flex-col">
+            <label for="brand-filter" class="filter-label">Marque</label>
+            <select id="brand-filter">
+              <option value="">Toutes les marques</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="events-container"></div>
+      <div id="no-events-message">
+        Aucun événement ne correspond à votre recherche.
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const regionFilter = document.getElementById("region-filter");
+          const dateFilter = document.getElementById("date-filter");
+          const brandFilter = document.getElementById("brand-filter");
+          const eventsContainer = document.getElementById("events-container");
+          const noEventsMessage = document.getElementById("no-events-message");
+
+          // Logos des marques via GP
+          const brandLogos = {
+            Callaway: "https://golfplus.fr/img/m/60.webp",
+            Cleveland: "https://golfplus.fr/img/m/81.webp",
+            Srixon: "https://golfplus.fr/img/m/120.webp",
+            XXIO: "https://golfplus.fr/img/m/147.webp",
+            Cobra: "https://golfplus.fr/img/m/85.webp",
+            Ping: "https://golfplus.fr/img/m/63.webp",
+            Mizuno: "https://golfplus.fr/img/m/221.webp",
+            TaylorMade: "https://golfplus.fr/img/m/96.webp",
+            Titleist: "https://golfplus.fr/img/m/95.webp",
+            Wilson: "https://golfplus.fr/img/m/32.webp",
+            Honma: "https://golfplus.fr/img/m/164.webp",
+            Onoff: "https://onoff.globeride.co.jp/global/images/global/site_logo.png",
+            GolfPlus: "https://golfplus.fr/img/m/141.webp",
+          };
+
+          const eventsData = [
+            //Juin
+            {
+              title: "Mizuno",
+              date: "2025-06-06",
+              region: "Sud-Ouest",
+              location: "Golf de Garonne (31)",
+              brands: ["Mizuno"],
+              link: "https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12789--77577-dbf1a218b544a"
+            },
+            {
+              title: "Cobra",
+              date: "2025-06-06",
+              region: "Sud-Ouest",
+              location: "Golf Le Provençal Golf (31)",
+              brands: ["Cobra"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12793--73537-646f057dbf486",
+            },
+            {
+              title: "multi-marques",
+              date: "2025-06-07",
+              region: "Belgique",
+              location: "Brussels Drohme Golf Club (BE)",
+              brands: [
+                "Callaway",
+                "Cleveland",
+                "Srixon",
+                "XXIO",
+                "Cobra",
+                "Mizuno",
+                "Ping",
+                "TaylorMade",
+                "Titleist",
+                "Wilson",
+
+              ],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=10954--78331-309f10650a2b6"
+            },
+
+            {
+              title: "Cleveland/Srixon/XXIO",
+              date: "2025-06-13",
+              region: "Sud-Ouest",
+              location: "Golf de Garonne (31)",
+              brands: ["Cleveland"],
+              link: "https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12798--89330-fe4d0acb29f60"
+            },
+            {
+              title: "Ping",
+              date: "2025-06-13",
+              region: "Centre",
+              location: "Golf de Cheverny (45)",
+              brands: ["Ping"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12799--14425-98faaf7425c2b"
+            },
+            {
+              title: "Cobra",
+              date: "2025-06-13",
+              region: "Belgique",
+              location: "Magasin Golf Plus Waterloo (BE)",
+              brands: ["Cobra"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12801--12119-c7dc897a87a19"
+            },
+            {
+              title: "Honma",
+              date: "2025-06-14",
+              region: "Ile-de-France",
+              location: "RCF La Boulie Fitting Center (78)",
+              brands: ["Honma"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12802--24229-cde98e092db4f"
+            },
+            {
+              title: "multi-marques",
+              date: "2025-06-14",
+              region: "Nord",
+              location: "Golf de Brigode (59)",
+              brands: [
+                "Callaway",
+                "Cleveland",
+                "Srixon",
+                "XXIO",
+                "Cobra",
+                "Ping",
+                "TaylorMade",
+                "Titleist",
+                "Wilson",
+              ],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=11074--36654-f04f11e5c80f4"
+            },
+            {
+              title: "Callaway",
+              date: "2025-06-17",
+              region: "Ile-de-France",
+              location: "Chill & Golf (75)",
+              brands: ["Callaway"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12810--17925-bad26277844c5"
+            },
+            {
+              title: "Titleist",
+              date: "2025-06-18",
+              region: "Sud-Ouest",
+              location: "Golf d'Idron (64)",
+              brands: ["Titleist"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12829--96154-a7e528ab994d0"
+            },
+            {
+              title: "Callaway",
+              date: "2025-06-20",
+              region: "Ile-de-France",
+              location: "Golf de Fourqueux (78)",
+              brands: ["Callaway"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12830--12208-61801e276b9fb"
+            },
+            {
+              title: "Cleveland/Srixon/XXIO",
+              date: "2025-06-20",
+              region: "Sud-Est",
+              location: "Le Provençal Golf (06)",
+              brands: ["Cleveland"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12831--46655-84ee632fcb31e"
+            },
+            {
+              title: "Cobra",
+              date: "2025-06-20",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon (33)",
+              brands: ["Cobra"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12832--74437-c8172b891906b"
+            },
+            {
+              title: "multi-marques",
+              date: "2025-06-21",
+              region: "Nord-Est",
+              location: "Golf du Fort (67)",
+              brands: [
+                "Callaway",
+                "Cleveland",
+                "Srixon",
+                "XXIO",
+                "Cobra",
+                "Mizuno",
+                "Ping",
+                "TaylorMade",
+                "Titleist",
+                "Wilson",
+                
+              ],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=11055--88571-4ac50d417ad69"
+            },
+            {
+              title: "Ping",
+              date: "2025-06-21",
+              region: "Sud-Ouest",
+              location: "Golf d'Idron (64)",
+              brands: ["Ping"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=14298--57722-bd9fd73fc15c8"
+            },
+            {
+              title: "Mizuno",
+              date: "2025-06-24",
+              region: "Sud-Ouest",
+              location: "Golf de Biarritz le Phare (64)",
+              brands: ["Mizuno"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12833--37044-6e8339be71643"
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-06-25",
+              region: "Centre",
+              location: "Golf de Touraine (37)",
+              brands: ["TaylorMade"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12839--14670-3a3be707026c6"
+            },
+            {
+              title: "Ping",
+              date: "2025-06-25",
+              region: "Sud-Ouest",
+              location: "Golf d'Alès Ribaute (34)",
+              brands: ["Ping"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12842--21776-28db79b7fa7e4"
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-06-26",
+              region: "Centre",
+              location: "Golf de la Tour de Salvagny (01)",
+              brands: ["TaylorMade"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12847--17487-8496de99fa3f4"
+            },
+            {
+              title: "Ping",
+              date: "2025-06-26",
+              region: "Sud-Ouest",
+              location: "Golf d'Estolosa (31)",
+              brands: ["Ping"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12849--88662-5a28a0de134d5"
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-06-26",
+              region: "Sud-Est",
+              location: "Le Provençal Golf (06)",
+              brands: ["TaylorMade"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=14822--38149-1e01fa793ba24"
+            },
+            {
+              title: "Callaway",
+              date: "2025-06-27",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon (33)",
+              brands: ["Callaway"],
+              link:"https://www.smartagenda.fr/pro/golfplus/rendez-vous/?affrdv&tkaction=12855--25082-e72bc4ca75f5c"
+            },
+            {
+              title: "Mizuno",
+              date: "2025-07-01",
+              region: "Centre",
+              location: "Golf Club Lyon (69)",
+              brands: ["Mizuno"],
+            },
+
+            {
+              title: "multi-marques",
+              date: "2025-07-12",
+              region: "Sud-Ouest",
+              location: "Golf de Chiberta (64)",
+              brands: ["Mizuno", "Cobra", "Ping", "TaylorMade"],
+            },
+            {
+              title: "fitting Golf Plus",
+              date: "2025-07-19",
+              region: "Sud-Ouest",
+              location: "Golf d'Ilbarritz (64)",
+              brands: ["GolfPlus"],
+            },
+            {
+              title: "multi-marques",
+              date: "2025-08-08",
+              region: "Sud-Ouest",
+              location: "Golf d'Ilbarritz (64)",
+              brands: ["Mizuno", "Cobra", "Ping", "TaylorMade", "GolfPlus"],
+            },
+            {
+              title: "multi-marques",
+              date: "2025-08-16",
+              region: "Sud-Ouest",
+              location: "Golf de Chiberta (64)",
+              brands: ["Callaway", "Ping", "GolfPlus"],
+            },
+            // generés
+
+            {
+              title: "Ping",
+              date: "2025-07-01",
+              region: "Ile-de-France",
+              location: "Chill & Golf (RDV de 1h)",
+              brands: ["Ping"],
+            },
+            {
+              title: "Cobra",
+              date: "2025-07-04",
+              region: "Est",
+              location: "Golf de norges",
+              brands: ["Cobra"],
+            },
+            {
+              title: "Callaway",
+              date: "2025-07-04",
+              region: "Nord-Ouest",
+              location: "Magasin Golf Plus Dinard",
+              brands: ["Callaway"],
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-07-05",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["TaylorMade"],
+            },
+            {
+              title: "Ping",
+              date: "2025-07-05",
+              region: "Ile-de-France",
+              location: "RCF La boulie",
+              brands: ["Ping"],
+            },
+            {
+              title: "Mizuno",
+              date: "2025-07-10",
+              region: "Nord-Ouest",
+              location: "Golf Barrière Deauville",
+              brands: ["Mizuno"],
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-07-10",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["TaylorMade"],
+            },
+            {
+              title: "Cleveland/Srixon/XXIO",
+              date: "2025-07-18",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["Cleveland","Srixon","XXIO"],
+            },
+            {
+              title: "Ping",
+              date: "2025-07-18",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["Ping"],
+            },
+            {
+              title: "Callaway",
+              date: "2025-07-18",
+              region: "Sud-Ouest",
+              location: "Golf d'Idron",
+              brands: ["Callaway"],
+            },
+            {
+              title: "Ping",
+              date: "2025-07-19",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["Ping"],
+            },
+            {
+              title: "multi-marques",
+              date: "2025-07-19",
+              region: "Sud-Ouest",
+              location: "Golf d'Ilbarritz",
+              brands: ["GolfPlus"],
+            },
+            {
+              title: "Titleist",
+              date: "2025-07-24",
+              region: "Nord",
+              location: "Magasin Golf Plus Lille",
+              brands: ["Titleist"],
+            },
+            {
+              title: "Onoff",
+              date: "2025-07-25",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["Onoff"],
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-07-25",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["TaylorMade"],
+            },
+            {
+              title: "Callaway",
+              date: "2025-07-26",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["Callaway"],
+            },
+            {
+              title: "TaylorMade",
+              date: "2025-07-26",
+              region: "Nord-Ouest",
+              location: "Golf Barrière Deauville",
+              brands: ["TaylorMade"],
+            },
+            {
+              title: "Mizuno",
+              date: "2025-07-31",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["Mizuno"],
+            },
+            {
+              title: "Cobra",
+              date: "2025-08-02",
+              region: "Nord-Ouest",
+              location: "Golf Barrière Deauville",
+              brands: ["Cobra"],
+            },
+            {
+              title: "Cleveland/Srixon/XXIO",
+              date: "2025-08-02",
+              region: "Nord-Ouest",
+              location: "Golf Barrière Deauville",
+              brands: ["Cleveland","Srixon","XXIO"],
+            },
+            {
+              title: "Cleveland/Srixon/XXIO",
+              date: "2025-08-07",
+              region: "Sud-Est",
+              location: "Golf du Pic Saint Loup",
+              brands: ["Cleveland","Srixon","XXIO"],
+            },
+            {
+              title: "Ping",
+              date: "2025-08-08",
+              region: "Sud-Est",
+              location: "Le Provençal Golf",
+              brands: ["Ping"],
+            },
+            {
+              title: "multi-marques",
+              date: "2025-08-08",
+              region: "Sud-Ouest",
+              location: "Golf d'Ilbarritz",
+              brands: ["Mizuno", "Cobra", "TaylorMade", "GolfPlus"],
+            },
+            {
+              title: "Ping",
+              date: "2025-08-08",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["Ping"],
+            },
+            {
+              title: "Callaway",
+              date: "2025-08-08",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["Callaway"],
+            },
+            {
+              title: "Callaway",
+              date: "2025-08-09",
+              region: "Nord-Ouest",
+              location: "Magasin Golf Plus Dinard",
+              brands: ["Callaway"],
+            },
+            {
+              title: "Ping",
+              date: "2025-08-09",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["Ping"],
+            },
+            {
+              title: "Ping",
+              date: "2025-08-14",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["Ping"],
+            },
+            {
+              title: "Cleveland/Srixon/XXIO",
+              date: "2025-08-14",
+              region: "Nord-Ouest",
+              location: "Magasin Golf Plus Dinard",
+              brands: ["Cleveland","Srixon","XXIO"],
+            },
+            {
+              title: "Titleist",
+              date: "2025-08-15",
+              region: "Nord",
+              location: "Le Touquet Golf Resort",
+              brands: ["Titleist"],
+            },
+            {
+              title: "multi-marques",
+              date: "2025-08-16",
+              region: "Sud-Ouest",
+              location: "Golf de Chiberta",
+              brands: ["Callaway", "Ping", "GolfPlus"],
+            },
+            {
+              title: "Cobra",
+              date: "2025-08-22",
+              region: "Sud-Ouest",
+              location: "Golf d'Arcachon",
+              brands: ["Cobra"],
+            },
+            {
+              title: "Callaway",
+              date: "2025-09-05",
+              region: "Belgique",
+              location: "Brussels Drohme Golf Club",
+              brands: ["Callaway"],
+            },
+            {
+              title: "multi-marques",
+              date: "2025-09-05",
+              region: "Ile-de-France",
+              location: "Golf de Paris (PCC)",
+              brands: [
+                "Callaway",
+                "Cleveland","Srixon","XXIO",
+                "Cobra",
+                "Mizuno",
+                "Ping",
+                "TaylorMade",
+                "Titleist",
+                "Wilson",
+              ],
+            },
+          ];
+
+          const uniqueRegions = [
+            ...new Set(eventsData.map((e) => e.region)),
+          ].sort();
+          const uniqueBrands = [
+            ...new Set(eventsData.flatMap((e) => e.brands)),
+          ].sort();
+
+          uniqueRegions.forEach((region) => {
+            const option = document.createElement("option");
+            option.value = region;
+            option.textContent = region;
+            regionFilter.appendChild(option);
+          });
+
+          uniqueBrands.forEach((brand) => {
+            const option = document.createElement("option");
+            option.value = brand;
+            option.textContent = brand;
+            brandFilter.appendChild(option);
+          });
+
+          function createEventCard(event) {
+  const card = document.createElement(event.link ? "a" : "div");
+  card.className = "card";
+
+  if (event.link) {
+    card.href = event.link;
+    card.target = "_blank"; // facultatif, pour ouvrir dans un nouvel onglet
+    card.style.textDecoration = "none";
+    card.style.color = "inherit";
+  }
+
+  card.innerHTML = `
+    <div class="card-header">
+      <h3 class="card-title">
+        <span class="title-demo">Démo</span>
+        <span class="title-brand">${event.title}</span>
+      </h3>
+      <span class="card-date">${new Date(event.date).toLocaleDateString(
+        "fr-FR",
+        {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }
+      )}</span>
+    </div>
+    <div class="card-location">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span>${event.location}</span>
+    </div>
+    <div>
+       ${
+         event.brands.length > 1
+           ? `<p class="brands-label">Marques présentes :</p>`
+           : ""
+       }
+      <div class="brand-logos ${
+        event.brands.length === 1 ? "single-brand" : ""
+      }">
+${event.brands
+  .map(
+    (name) => `
+  <div class="brand">
+    <div class="avatar">
+      <img src="${
+        brandLogos[name] || "https://via.placeholder.com/100x50?text=Logo"
+      }" alt="${name}">
+    </div>
+    <span class="tooltip">${name}</span>
+  </div>
+  `
+  )
+  .join("")}
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+
+          function displayEvents(filteredEvents) {
+            eventsContainer.innerHTML = "";
+            if (filteredEvents.length === 0) {
+              noEventsMessage.style.display = "block";
+            } else {
+              noEventsMessage.style.display = "none";
+              filteredEvents.forEach((event) => {
+                const card = createEventCard(event);
+                eventsContainer.appendChild(card);
+              });
+            }
+          }
+
+          function filterEvents() {
+            const selectedRegion = regionFilter.value;
+            const selectedDate = dateFilter.value;
+            const selectedBrand = brandFilter.value;
+
+            const filtered = eventsData.filter((event) => {
+              const regionMatch =
+                !selectedRegion || event.region === selectedRegion;
+              const dateMatch = !selectedDate || event.date === selectedDate;
+              const brandMatch =
+                !selectedBrand || event.brands.includes(selectedBrand);
+              return regionMatch && dateMatch && brandMatch;
+            });
+
+            displayEvents(filtered);
+          }
+
+          regionFilter.addEventListener("change", filterEvents);
+          dateFilter.addEventListener("change", filterEvents);
+          brandFilter.addEventListener("change", filterEvents);
+
+          displayEvents(eventsData);
+        });
+      </script>
+    </main>
+  </body>
+</html>
