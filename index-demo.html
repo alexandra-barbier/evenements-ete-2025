@@ -71,7 +71,7 @@
       @media screen and (max-width: 768px) {
         .filters {
           grid-template-columns: repeat(1, minmax(0, 1fr));
-          gap:.9rem
+          gap: .9rem;
         }
       }
       .filters select,
@@ -80,7 +80,7 @@
         padding-bottom: 0.5rem;
         padding-left: 1rem;
         padding-right: 1rem;
-        width:100%;
+        width: 100%;
         border-radius: 0.5rem;
         border: 1px solid #333333;
       }
@@ -177,25 +177,6 @@
         /* border: 1px solid #ccc; */
         background: #fff;
         padding: 2px;
-      }
-      .brand .tooltip {
-        position: absolute;
-        bottom: 110%;
-        left: 50%;
-        transform: translateX(-50%) translateY(-4px);
-        background: #1f2937;
-        color: white;
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        opacity: 0;
-        white-space: nowrap;
-        pointer-events: none;
-        transition: opacity 0.2s ease-in-out;
-        z-index: 100;
-      }
-      .brand:hover .tooltip {
-        opacity: 1;
       }
       #no-events-message {
         text-align: center;
@@ -851,7 +832,7 @@ ${event.brands
         brandLogos[name] || "https://via.placeholder.com/100x50?text=Logo"
       }" alt="${name}">
     </div>
-    <span class="tooltip">${name}</span>
+    
   </div>
   `
   )
